@@ -129,6 +129,6 @@ export const containers = [{
 
 export const ship = {
     id: 's1',
-    width: 20,
+    width: 25,
     length: 30
 }

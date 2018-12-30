@@ -129,6 +129,6 @@ exports.containers = [{
 ];
 exports.ship = {
     id: 's1',
-    width: 20,
+    width: 25,
     length: 30
 };
