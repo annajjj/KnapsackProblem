@@ -29,6 +29,6 @@ function generateMockData(numberOfSamples: number){
     saveDataToFile("export const generatedContainers =" + JSON.stringify(mockData));
 }
 
-generateMockData(50);
+generateMockData(100);
 
 

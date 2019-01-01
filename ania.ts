@@ -5,12 +5,16 @@ import * as cTable from 'console.table';
 let notPlacedContainers = [];
 
 function checkSpace(container) {
-    let result = checkSpaceXY(container, 'floor0', 'normal');
-    if (!result.valid) result = checkSpaceXY(container, 'floor0', 'rotated');
-    if (!result.valid) notPlacedContainers.push(container);
+    let result;
+    for(let floor = 0; floor< floors; floor++){
+        result = checkSpaceXY(container, 'floor' + floor);
+        if (!result.valid) result = checkSpaceXY(container, 'floor'  + floor, 'rotated');
+        if (result.valid) break;
+    }
+    if (!result.valid) notPlacedContainers.push(container); //dla developementu
 }
 
-function checkSpaceXY(container, floor, type: 'normal' | 'rotated') {
+function checkSpaceXY(container, floor, type: 'normal' | 'rotated' = 'normal') {
     if (type == 'rotated') [container.width, container.length] = [container.length, container.width];
     for (let shipX = 0; shipX < ship.length; shipX++) {
         for (let shipY = 0; shipY < ship.width; shipY++) {
@@ -60,23 +64,16 @@ for (let floor = 0; floor < floors; floor ++){
     }
 }
 
-    // let placedContainers = new Array(ship.length);
-    // for (let i = 0; i < ship.length; i++) {
-    //     placedContainers[i] = new Array(ship.width);
-    //     for (let j = 0; j < ship.width; j++)
-    //         placedContainers[i][j] = 'x';
-    // }
-
-
-// console.log(placedContainers["floor0"]);
-// let table = cTable.getTable(placedContainers);
-
-// console.table(placedContainers);
 
 sortedContainers.forEach(el => checkSpace(el));
 
-let table = cTable.getTable(placedContainers);
-
-console.table(placedContainers);
-
-console.log(notPlacedContainers)
+console.log('floor0')
+let table = cTable.getTable(placedContainers["floor0"]);
+console.table(placedContainers["floor0"]);
+console.log('floor1')
+table = cTable.getTable(placedContainers["floor1"]);
+console.table(placedContainers["floor1"]);
+console.log('floor2')
+table = cTable.getTable(placedContainers["floor2"]);
+console.table(placedContainers["floor2"]);
+console.log("notPlaced", notPlacedContainers);

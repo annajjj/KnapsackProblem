@@ -24,4 +24,4 @@ function generateMockData(numberOfSamples) {
     var mockData = createRandomData(numberOfSamples);
     saveDataToFile("export const generatedContainers =" + JSON.stringify(mockData));
 }
-generateMockData(50);
+generateMockData(100);
