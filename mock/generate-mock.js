@@ -6,6 +6,7 @@ function createRandomData(numberOfSamples) {
             id: 'c' + i,
             width: Math.ceil(Math.random() * 10),
             length: Math.ceil(Math.random() * 10),
+            height: 20,
             timestamp: Math.ceil(Math.random() * 5)
         });
     }
