@@ -2,13 +2,11 @@ import { containers, ship } from "./mock/mock";
 import { generatedContainers } from "./mock/generated-data";
 import * as cTable from 'console.table';
 
-let notPlacedContainers = [];
-
 function checkSpace(container) {
     let result;
     for(let floor = 0; floor< floors; floor++){
-        result = checkSpaceXY(container, 'floor' + floor);
-        if (!result.valid) result = checkSpaceXY(container, 'floor'  + floor, 'rotated');
+        result = checkSpaceXY(container, floor);
+        if (!result.valid) result = checkSpaceXY(container, floor, 'rotated');
         if (result.valid) break;
     }
     if (!result.valid) notPlacedContainers.push(container); //dla developementu
@@ -18,14 +16,27 @@ function checkSpaceXY(container, floor, type: 'normal' | 'rotated' = 'normal') {
     if (type == 'rotated') [container.width, container.length] = [container.length, container.width];
     for (let shipX = 0; shipX < ship.length; shipX++) {
         for (let shipY = 0; shipY < ship.width; shipY++) {
-            if (placedContainers[floor][shipX][shipY] === 'x') {
+            if (placedContainers[`floor${floor}`][shipX][shipY] === 'x') {
+                let checkFloorUnder = 0;
                 for (let containerX = shipX; ((containerX < shipX + container.length) && (shipX + container.length < ship.length + 1)); containerX++) {
                     for (let containerY = shipY; ((containerY < shipY + container.width) && (shipY + container.width < ship.width + 1)); containerY++) {
-                        if (placedContainers[floor][containerX][containerY] !== 'x') {
+                        if (placedContainers[`floor${floor}`][containerX][containerY] !== 'x') {
                             containerX = shipX + container.length;
                             containerY = shipY + container.width;
+                            break;
                         }
+
+                        if(floor > 0) 
+                          if (placedContainers[`floor${floor-1}`][containerX][containerY] !== 'x') 
+                            checkFloorUnder++;
+
                         if ((container.length == (containerX - shipX + 1)) && (container.width == (containerY - shipY + 1))) {
+                            if (floor > 0 && checkFloorUnder < (container.length * container.width / 2)) 
+                            {
+                                containerX = shipX + container.length;
+                                containerY = shipY + container.width;
+                                break;
+                            }
                             fillArray(shipX, shipY, container, floor)
                             return { valid: true };
                         }
@@ -40,7 +51,17 @@ function checkSpaceXY(container, floor, type: 'normal' | 'rotated' = 'normal') {
 function fillArray(x, y, container, floor) {
     for (let i = x; i < container.length + x; i++)
         for (let j = y; j < container.width + y; j++)
-            placedContainers[floor][i][j] = container.id;
+            placedContainers[`floor${floor}`][i][j] = container.id;
+}
+
+function showResults(){
+    let table;
+    for(let floor = 0; floor < floors; floor++){
+        console.log(`floor${floor}`)
+        table = cTable.getTable(placedContainers[`floor${floor}`]);
+        console.table(placedContainers[`floor${floor}`]);
+    }
+    console.log("not placed containers: ", notPlacedContainers);
 }
 
 const sortedContainers = generatedContainers
@@ -51,29 +72,19 @@ const sortedContainers = generatedContainers
     })
 
 
-let floors = Math.floor(ship.height/ generatedContainers[0].height);
-
+let floors = Math.floor(ship.height / generatedContainers[0].height);
 let placedContainers = {};
+let notPlacedContainers = [];
 
 for (let floor = 0; floor < floors; floor ++){
-    placedContainers[`floor` + floor] = new Array(ship.length);
+    placedContainers[`floor${floor}`] = new Array(ship.length);
     for (let i = 0; i < ship.length; i++) {
-        placedContainers[`floor` + floor][i] = new Array(ship.width);
+        placedContainers[`floor${floor}`][i] = new Array(ship.width);
         for (let j = 0; j < ship.width; j++)
-            placedContainers[`floor` + floor][i][j] = 'x';
+            placedContainers[`floor${floor}`][i][j] = 'x';
     }
 }
 
 
 sortedContainers.forEach(el => checkSpace(el));
-
-console.log('floor0')
-let table = cTable.getTable(placedContainers["floor0"]);
-console.table(placedContainers["floor0"]);
-console.log('floor1')
-table = cTable.getTable(placedContainers["floor1"]);
-console.table(placedContainers["floor1"]);
-console.log('floor2')
-table = cTable.getTable(placedContainers["floor2"]);
-console.table(placedContainers["floor2"]);
-console.log("notPlaced", notPlacedContainers);
+showResults();
