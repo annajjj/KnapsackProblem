@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/annajjj/KnapsackProblem#readme",
   "dependencies": {
+    "@types/node": "^10.12.18",
     "console.table": "^0.10.0"
   }
 }

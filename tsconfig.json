@@ -1,7 +1,6 @@
 {
-  "compileOnSave": true,
     "compilerOptions": {
-      "lib": ["es6"],   
+      "lib": ["es6", "dom"],   
       "module": "commonjs",
       "noImplicitReturns": false,
       "outDir": "js",
