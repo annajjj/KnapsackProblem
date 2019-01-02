@@ -7,8 +7,6 @@ function checkSpace(container) {
     var result;
     for (var floor = 0; floor < floors; floor++) {
         result = checkSpaceXY(container, floor);
-        if (!result.valid)
-            result = checkSpaceXY(container, floor, 'rotated');
         if (result.valid)
             break;
     }
@@ -82,8 +80,6 @@ var sortedContainers = generated_data_1.generatedContainers
         return 1;
     else if (a.timestamp < b.timestamp)
         return -1;
-    else
-        return (a.width * a.length < b.width * b.length) ? 1 : -1;
 });
 console.time('execution');
 var floors = Math.floor(mock_1.ship.height / generated_data_1.generatedContainers[0].height);
