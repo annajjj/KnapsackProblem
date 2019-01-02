@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "lib": ["es6"],   
+      "module": "commonjs",
+      "noImplicitReturns": false,
+      "outDir": "js",
+      "sourceMap": false,
+      "target": "es6",
+      "rootDir": "ts"
+    },
+    "compileOnSave": true
+
+  }

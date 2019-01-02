@@ -1,19 +1,19 @@
 "use strict";
-exports.__esModule = true;
-var mock_1 = require("./mock/mock");
-var generated_data_1 = require("./mock/generated-data");
-var notPlacedContainers = [];
-var placedContainers = {};
-var floors = Math.floor(mock_1.ship.height / generated_data_1.generatedContainers[0].height);
-for (var floor = 0; floor < floors; floor++) {
-    placedContainers["floor" + floor] = new Array(mock_1.ship.length);
-    for (var i = 0; i < mock_1.ship.length; i++) {
-        placedContainers["floor" + floor][i] = new Array(mock_1.ship.width);
-        for (var j = 0; j < mock_1.ship.width; j++)
-            placedContainers["floor" + floor][i][j] = 'x';
+Object.defineProperty(exports, "__esModule", { value: true });
+const mock_1 = require("./mock/mock");
+const generated_data_1 = require("./mock/generated-data");
+let notPlacedContainers = [];
+let placedContainers = {};
+let floors = Math.floor(mock_1.ship.height / generated_data_1.generatedContainers[0].height);
+for (let floor = 0; floor < floors; floor++) {
+    placedContainers[`floor` + floor] = new Array(mock_1.ship.length);
+    for (let i = 0; i < mock_1.ship.length; i++) {
+        placedContainers[`floor` + floor][i] = new Array(mock_1.ship.width);
+        for (let j = 0; j < mock_1.ship.width; j++)
+            placedContainers[`floor` + floor][i][j] = 'x';
     }
 }
-var containerTest = [{
+const containerTest = [{
         id: 'c1',
         width: 10,
         length: 10,
@@ -42,29 +42,26 @@ var containerTest = [{
         timestamp: 1
     },
 ];
-var Coord = /** @class */ (function () {
-    function Coord(x, y) {
+class Coord {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-    return Coord;
-}());
-var FreeSpace = /** @class */ (function () {
-    function FreeSpace(x, y, width, length) {
+}
+class FreeSpace {
+    constructor(x, y, width, length) {
         this.pivot = new Coord(x, y);
-        this.size = { width: width, length: length };
+        this.size = { width, length };
     }
-    return FreeSpace;
-}());
-var Warehouse = /** @class */ (function () {
-    function Warehouse(w, l) {
+}
+class Warehouse {
+    constructor(w, l) {
         this.elements = [];
         this.space = [new FreeSpace(0, 0, w, l)];
     }
-    Warehouse.prototype.store = function (container) {
-        var freeSpace;
-        for (var _i = 0, _a = this.space; _i < _a.length; _i++) {
-            var space = _a[_i];
+    store(container) {
+        let freeSpace;
+        for (const space of this.space) {
             if (space.size.width >= container.width && space.size.length >= container.length) {
                 freeSpace = space;
                 break;
@@ -82,7 +79,7 @@ var Warehouse = /** @class */ (function () {
                 this.space.push(new FreeSpace(freeSpace.pivot.x, freeSpace.pivot.y + container.length, container.width, freeSpace.size.length - container.length));
             }
             // plain remove
-            var i = this.space.findIndex(function (el) { return el === freeSpace; });
+            const i = this.space.findIndex(el => el === freeSpace);
             this.space.splice(i, 1);
             console.log(i);
             console.log(this.space);
@@ -91,11 +88,10 @@ var Warehouse = /** @class */ (function () {
             console.log('________________________');
             console.log();
         }
-    };
-    return Warehouse;
-}());
-var warehouse = new Warehouse(25, 30);
-containerTest.forEach(function (el) { return warehouse.store(el); });
+    }
+}
+const warehouse = new Warehouse(25, 30);
+containerTest.forEach(el => warehouse.store(el));
 /**
      * 25x30
      * czy mozna 10x10, tak mozna

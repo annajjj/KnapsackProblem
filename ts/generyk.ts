@@ -18,13 +18,6 @@ for (let floor = 0; floor < floors; floor++) {
     }
 }
 
-interface Container {
-    id: string;
-    width: number;
-    length: number;
-    height: number;
-    timestamp: number;
-}
 
 
 const containerTest: Container[] = [{
