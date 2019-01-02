@@ -4,19 +4,19 @@ import * as cTable from 'console.table';
 import { number } from "easy-table";
 
 
-let notPlacedContainers = [];
-let placedContainers = {};
-let floors = Math.floor(ship.height / generatedContainers[0].height);
+// let notPlacedContainers = [];
+// let placedContainers = {};
+// let floors = Math.floor(ship.height / generatedContainers[0].height);
 
 
-for (let floor = 0; floor < floors; floor++) {
-    placedContainers[`floor` + floor] = new Array(ship.length);
-    for (let i = 0; i < ship.length; i++) {
-        placedContainers[`floor` + floor][i] = new Array(ship.width);
-        for (let j = 0; j < ship.width; j++)
-            placedContainers[`floor` + floor][i][j] = 'x';
-    }
-}
+// for (let floor = 0; floor < floors; floor++) {
+//     placedContainers[`floor` + floor] = new Array(ship.length);
+//     for (let i = 0; i < ship.length; i++) {
+//         placedContainers[`floor` + floor][i] = new Array(ship.width);
+//         for (let j = 0; j < ship.width; j++)
+//             placedContainers[`floor` + floor][i][j] = 'x';
+//     }
+// }
 
 
 
@@ -48,7 +48,16 @@ const containerTest: Container[] = [{
     height: 30,
     timestamp: 1
 },
+{
+    id: 'c5',
+    width: 15,
+    length: 10,
+    height: 30,
+    timestamp: 1
+},
 ]
+
+
 class Coord { constructor(public x: number, public y: number) { } }
 class FreeSpace {
     pivot: Coord;
@@ -56,17 +65,20 @@ class FreeSpace {
     constructor(x: number, y: number, width: number, length: number) {
         this.pivot = new Coord(x, y);
         this.size = { width, length };
+        // this.floors = Math.floor(ship.height / generatedContainers[0].height)
     }
 }
 
 class Warehouse {
     elements: { element: {}, pivot: Coord }[] = [];
-    space;
+    space: FreeSpace[];
+    private strtingSpace: number;
     constructor(w,l){
         this.space = [new FreeSpace(0,0,w,l)];
+        this.strtingSpace = w*l;
     }
 
-    store(container: Container) {
+    private findPlace(container: Container): FreeSpace | undefined {
         let freeSpace: FreeSpace;
         for (const space of this.space) {
             if (space.size.width >= container.width && space.size.length >= container.length) {
@@ -74,6 +86,26 @@ class Warehouse {
                 break;
             }
         }
+        return freeSpace;
+    }
+
+    private elementSwap(container: Container) {  [container.width, container.length] = [container.length, container.width]  }
+
+    countFreeSpace() {
+        return this.space.reduce((acc, next)=> {
+            return acc + next.size.width * next.size.length;
+        },0) / this.strtingSpace;
+    }
+
+    store(container: Container) {
+        let freeSpace = this.findPlace(container);
+        // if not enough space, swap width and length
+        if(!freeSpace) {
+            this.elementSwap(container);
+            console.log("swaped: ", container);
+            freeSpace = this.findPlace(container);   
+        }
+        // if place was found
         if(freeSpace) {
             // add container
             this.elements.push({element: container, pivot: freeSpace.pivot});
@@ -103,9 +135,7 @@ class Warehouse {
             console.log(i)
             console.log(this.space)
             console.log(this.elements);
-            console.log()
-            console.log('________________________')
-            console.log()
+            console.log('\n________________________\n')
         }
     }
 }
@@ -115,7 +145,7 @@ const warehouse = new Warehouse(25,30);
 
 
 containerTest.forEach(el => warehouse.store(el))
-
+console.log(warehouse.countFreeSpace());
 
     
 
