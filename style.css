@@ -1,0 +1,34 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+body{
+    background: #fafafa;
+    font-family: 'Raleway', sans-serif;
+}
+
+
+.header{
+    width:100%;
+    height: 100px;
+    background-color: #242324;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    letter-spacing: 10px;
+    text-align: center;
+    position: relative;
+    color: #f77750;
+}
+
+.container-columns{
+    display: flex;
+    border: 1px solid red;
+}
+
+.container-columns .div{
+    width: 30%;
+}
+  

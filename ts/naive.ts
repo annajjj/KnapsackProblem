@@ -12,6 +12,7 @@ export class Warehouse {
     floors = Math.floor(ship.height / generatedContainers[0].height);
     shipSpaceMap = {};
     notPlacedContainers = [];
+    cords = {};
 
     constructor(id, width, length, height, containers) {
         this.id = id;
@@ -19,6 +20,7 @@ export class Warehouse {
         this.length = length;
         this.height = height;
         this.createShipSpaceMap();
+        this.createCordsMap();
         this.sortContainers(containers);
     }
 
@@ -32,6 +34,12 @@ export class Warehouse {
                     this.shipSpaceMap[`floor${floor}`][i][j] = 'x';
             }
         }
+    }
+
+    createCordsMap() {
+        for (let floor = 0; floor < this.floors; floor++) {
+                this.cords[`floor${floor}`] = new Array();
+            }
     }
 
     //sort containers by timestamp and area
@@ -82,6 +90,7 @@ export class Warehouse {
                                     containerY = shipY + container.width;
                                     break;
                                 }
+                                this.cords[`floor${floor}`].push({element: {id: container.id, width: container.width, length: container.length}, pivot: {x: shipX, y: shipY}});
                                 this.fillShipSpaceMapWithContainer(shipX, shipY, container, floor)
                                 return { valid: true };
                             }

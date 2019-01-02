@@ -33,6 +33,7 @@ export function halfBrutal(ship, containers) {
     const warehouse = new WarehouseExtended(ship.id, ship.width, ship.length, ship.width, containers);
     warehouse.placeContainers();
     warehouse.showResults();
+    // console.log(JSON.stringify(warehouse.cords["floor0"], null, 3));
 }
 
 halfBrutal(ship, generatedContainers);
