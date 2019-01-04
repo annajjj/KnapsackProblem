@@ -1,4 +1,4 @@
-const fs = require('fs');
+import { saveToFile } from "../helpers";
 
 function createRandomData(numberOfSamples: number) {
     let mockData = [];
@@ -15,18 +15,11 @@ function createRandomData(numberOfSamples: number) {
     return mockData;
 }
 
-function saveDataToFile(data) {
-    fs.writeFile('./generated-data.ts', data ,  function(err) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log("Mock data generated");
-    });
-}
+
 
 function generateMockData(numberOfSamples: number){
     const mockData = createRandomData(numberOfSamples); 
-    saveDataToFile("export const generatedContainers =" + JSON.stringify(mockData));
+    saveToFile("export const generatedContainers =" + JSON.stringify(mockData), './generated-data.ts');
 }
 
 generateMockData(100);

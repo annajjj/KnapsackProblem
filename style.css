@@ -25,7 +25,7 @@ canvas {
     letter-spacing: 10px;
     text-align: center;
     position: relative;
-    color: #5200cc;
+    color: #990000;
 }
 
 .menu{
@@ -33,12 +33,20 @@ canvas {
     height: 50px;
     background-color: white;;
     display: flex;
-    color: #5200cc;
+    color: #990000;
+    box-shadow: 0 3px 20px rgba(3,3,2,.2);
+}
+
+.incrementation {
+    margin: 20px 0px;
+    text-align: center;
+    color: #990000;
+    font-weight: bold;
 }
 
 .container-columns{
     display: flex;
-    border: 1px solid #5200cc;
+    border: 1px solid #990000;
 }
   
 .container-columns  > div{
@@ -55,7 +63,7 @@ canvas {
 }
 
 .floor-text-container{
-    background-color: #5200cc;
+    background-color: #990000;
     width: 3% !important;
     position: relative;
 }
