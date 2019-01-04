@@ -1,6 +1,8 @@
 *{
     margin:0;
     padding:0;
+    box-sizing: border-box;
+    border: none;
 }
 
 body{
@@ -8,6 +10,9 @@ body{
     font-family: 'Raleway', sans-serif;
 }
 
+canvas {
+    border: none;
+}
 
 .header{
     width:100%;
@@ -20,15 +25,52 @@ body{
     letter-spacing: 10px;
     text-align: center;
     position: relative;
-    color: #f77750;
+    color: #5200cc;
+}
+
+.menu{
+    width:100%;
+    height: 50px;
+    background-color: white;;
+    display: flex;
+    color: #5200cc;
 }
 
 .container-columns{
     display: flex;
-    border: 1px solid red;
-}
-
-.container-columns .div{
-    width: 30%;
+    border: 1px solid #5200cc;
 }
   
+.container-columns  > div{
+    width: 30%;
+    /* border: 1px solid peru; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+  
+.ship-name{
+    margin: 10px 0px;
+}
+
+.floor-text-container{
+    background-color: #5200cc;
+    width: 3% !important;
+    position: relative;
+}
+.floor-text{
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: right, top;
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    color: white;
+}
+
+.ship-name{
+    color:red;
+}
+.ship-send{
+    color:green;
+}
