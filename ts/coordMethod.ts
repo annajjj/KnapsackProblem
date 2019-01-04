@@ -1,5 +1,4 @@
 import { containers, ship } from "./mock/mock";
-import { generatedContainers } from "./mock/generated-data";
 import * as cTable from 'console.table';
 import { number } from "easy-table";
 import { FreeSpace } from "./classes/classes"
@@ -136,7 +135,8 @@ export class Warehouse {
     floors: Array<FreeSpace[]> = [];
     private startingFloorSpace: number;
     constructor(public ship: Ship) {
-        for (let i = 0; i < Math.floor(ship.height / generatedContainers[0].height); i++) {
+        // bug Math.floor(ship.height / generatedContainers[0].height) hard code :)
+        for (let i = 0; i < Math.floor(ship.height / containers[0].height); i++) {
             this.floors.push([new FreeSpace(0, 0, ship.width, ship.length)]);
             this.elements.push([]);
         };
@@ -157,9 +157,9 @@ export class Warehouse {
 
         for (let floor = 0; floor < this.floors.length; floor++) {
             this.elements[floor].forEach(el => {
-                for(let x = el.pivot.x; x < el.pivot.x + el.element.width; x++){
-                    for(let y = el.pivot.y; y < el.pivot.y + el.element.length; y++){
-                        placedContainers[`floor${floor}`][y][x] = el.element.id;
+                for(let x = el.pivot.x; x < el.pivot.x + el.element.length; x++){
+                    for(let y = el.pivot.y; y < el.pivot.y + el.element.width; y++){
+                        placedContainers[`floor${floor}`][x][y] = el.element.id;
                     }
                 }
             })
@@ -203,11 +203,10 @@ export class Warehouse {
             let count = floor.reduce((count, space) => {
                 return count + space.size.width * space.size.length;
             }, 0) / this.startingFloorSpace;
-            console.log(count)
             return result + count;
         }, 0) / this.floors.length;
     }
-
+    //bug inna interpretacja x, y
     store(container: Container): boolean {
         let freeSpace = this.findPlace(container);
         // if not placed
@@ -217,25 +216,25 @@ export class Warehouse {
             // add container
             this.elements[freeSpace.floor].push({ element: container, pivot: freeSpace.space.pivot });
 
-            // bigger on right
+            //bigger "below"
             if (freeSpace.space.size.width - container.width) {
                 this.floors[freeSpace.floor].push(new FreeSpace(
-                    freeSpace.space.pivot.x + container.width,
-                    freeSpace.space.pivot.y,
+                    freeSpace.space.pivot.x,
+                    freeSpace.space.pivot.y + container.width,
                     freeSpace.space.size.width - container.width,
                     freeSpace.space.size.length
                 ));
             }
-
-            //smaller below
+            // smaller "on right"
             if (freeSpace.space.size.length - container.length) {
                 this.floors[freeSpace.floor].push(new FreeSpace(
-                    freeSpace.space.pivot.x,
-                    freeSpace.space.pivot.y + container.length,
+                    freeSpace.space.pivot.x + container.length,
+                    freeSpace.space.pivot.y,
                     container.width,
                     freeSpace.space.size.length - container.length
                 ));
             }
+
             // plain remove
             const i = this.floors[freeSpace.floor].findIndex(el => el === freeSpace.space);
             this.floors[freeSpace.floor].splice(i, 1);
@@ -251,9 +250,13 @@ export class Warehouse {
 const warehouse = new Warehouse(ship);
 
 
-
-containerTest.forEach(el => warehouse.store(el))
-console.log(warehouse.countFreeSpace());
+// containers.sort((a, b) => {
+//     if (a.timestamp > b.timestamp) return 1;
+//     else if (a.timestamp < b.timestamp) return -1;
+//     else return (a.width * a.length < b.width * b.length) ? 1 : -1;
+// })
+containers.forEach(el => warehouse.store(el))
+// console.log(warehouse.countFreeSpace());
 
 
 

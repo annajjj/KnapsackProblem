@@ -1,5 +1,8 @@
+import { WarehouseElement } from './a.d';
+import { Warehouse } from './../naive';
+import { FreeSpace, Coord } from "../classes/classes";
 
-interface Container {
+export interface Container {
     id: string;
     width: number;
     length: number;
@@ -8,7 +11,7 @@ interface Container {
 }
 
 
-interface Ship{
+export interface Ship{
     id: string,
     width: number,
     length: number,
@@ -16,6 +19,12 @@ interface Ship{
 }
 
 
+export interface FreeSpacePointer{ 
+    space: FreeSpace, 
+    floor:number
+}
+
+export interface WarehouseElement { element: Container, pivot: Coord }
 
 
 
