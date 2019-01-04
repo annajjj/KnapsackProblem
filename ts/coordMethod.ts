@@ -207,7 +207,8 @@ export class Warehouse {
         }, 0) / this.floors.length;
     }
     //bug inna interpretacja x, y
-    store(container: Container): boolean {
+    store(chuj: Container): boolean {
+        let container = {...chuj};
         let freeSpace = this.findPlace(container);
         // if not placed
         if(!freeSpace) return false;
@@ -247,7 +248,7 @@ export class Warehouse {
     }
 }
 
-const warehouse = new Warehouse(ship);
+// const warehouse = new Warehouse(ship);
 
 
 // containers.sort((a, b) => {
@@ -255,18 +256,21 @@ const warehouse = new Warehouse(ship);
 //     else if (a.timestamp < b.timestamp) return -1;
 //     else return (a.width * a.length < b.width * b.length) ? 1 : -1;
 // })
-containers.forEach(el => warehouse.store(el))
+// containers.forEach(el => warehouse.store(el))
 // console.log(warehouse.countFreeSpace());
 
 
 
-console.log('\n________________________________________________________________\n')
+// console.log('\n________________________________________________________________\n')
 
-const elements = warehouse.printElements()
-for(let floor in elements){
-    let table = cTable.getTable(elements[floor]);
-    console.log(table)
-}
+// const elements = warehouse.printElements()
+// for(let floor in elements){
+//     let table = cTable.getTable(elements[floor]);
+//     console.log(table)
+// }
+
+
+
 /**
      * 25x30
      * czy mozna 10x10, tak mozna

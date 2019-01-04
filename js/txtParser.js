@@ -1,22 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+//bug dont parse anything
+//bug resolve: let splittedByEnter = data.split('\n'); insted of /\r\n/
 function parseTxt(data) {
     //split data by enter key
-    let splittedByEnter = data.split(/\r\n/);
+    let splittedByEnter = data.split('\n');
     //split each line by space key
     let splittedBySpace = [];
     splittedByEnter.forEach((el, i) => splittedBySpace.push(el.split(",")));
     //validate line and push if valid
     let validatedData = [];
     splittedBySpace.forEach(el => {
-        if (validateLine(el))
-            validatedData.push({
+        if (validateLine(el)) {
+            const element = {
                 id: el[0],
                 width: +el[1],
                 height: +el[2],
-                length: +el[3],
-                timestamp: +el[4]
-            });
+                length: +el[3]
+            };
+            if (el[0].includes('c'))
+                element['timestamp'] = +el[4];
+            validatedData.push(element);
+        }
     });
     return validatedData;
 }
