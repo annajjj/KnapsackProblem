@@ -46,11 +46,12 @@ canvas {
     color: #242324;
     /* font-weight: bold; */
     text-transform: uppercase;
+    margin-right: 20px;
 }
 
 .container-columns{
     display: flex;
-    border: 1px solid #990000;
+    padding: 5px 0px;
 }
   
 .container-columns  > div{
@@ -134,4 +135,32 @@ canvas {
 [type="radio"]:checked + span:before {
     background: #990000;
     box-shadow: 0 0 0 0.2em #990000;
+}
+
+.incrementation-container {
+    display: flex;
+    justify-content: center;
+}
+
+button{
+    background-color: transparent;
+    color: #990000 !important;
+    outline: none;
+}
+
+button:after{
+    content: '\25B2';
+
+}
+
+.arrow-toggle:after{
+    content: '\25BC';
+}
+
+.hide-container {
+    display: none;
+}
+
+.incrementation-wrapper:nth-child(2n) {
+    background-color: #eee;
 }
