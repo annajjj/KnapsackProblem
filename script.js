@@ -1,32 +1,54 @@
-window.addEventListener("load", function (event) {
+window.addEventListener("load", (event) => {
+
     //incrementation node
-    createNode("div", "#container", null, "incrementation", "1 delivery")
-    //container columns node
-    createNode("div", "#container", "container-columns1", "container-columns", null);
-    //floor-text-container node
-    createNode("div", "#container-columns1", "floor-text-container1", "floor-text-container", null);
-    //floor-text node
-    createNode("div", "#floor-text-container1", null, "floor-text", "floor0");
+    createNode("div", "container", null, "incrementation", "1 delivery")
+    createNode("div", "container", "ship-label1", "ship-label", null);
 
-    //ships with canvases 
-    for (let i = 0; i < 3; i++) {
-        createNode("div", "#container-columns1", `ship${i + 1}`, null, null);
-        createNode("div", `#ship${i + 1}`, null, "ship-name", `${result[0][i].id} - free space ${(result[0][i].freeSpace * 100).toFixed(2)}%`, result[0][i].send);
-        
-        //prepare canvas
-        const floor = function (p) {
-            p.setup = function () {
-                setCanvas(p, result[0][i]);
-            };
+    //firstly create sectins for floors - max(floor of all ships)
+    const largestFloorNumber = Math.max(...result[0].map(el => el = el.containers.length));
 
-            p.draw = function () {
-                drawCanvas(p, result[0][i]);
-            };
-        };
-        const ship = new p5(floor, window.document.getElementById(`ship${i + 1}`));
+    for (let floor = 0; floor < largestFloorNumber; floor++) {
+        //container columns node
+        createNode("div", "container", `container-columns1-${floor}`, "container-columns", null);
+        //floor-text-container node
+        createNode("div", `container-columns1-${floor}`, `floor-text-container1-${floor}`, "floor-text-container", null);
+        //floor-text node
+        createNode("div", `floor-text-container1-${floor}`, null, "floor-text", `floor${floor}`);
+
+        for (let i = 0; i < 3; i++) {
+            createNode("div", `container-columns1-${floor}`, `ship${i + 1}-${floor}`, null, null);
+        }
+
     }
+    //ships with canvases 
+    for (let ship = 0; ship < 3; ship++) {
+        createNode("div", "ship-label1", `ship-label-container${ship}`, "ship-label-container", null);
+        createNode("div", `ship-label-container${ship}`, null, "ship-name", `${result[0][ship].id} - free space ${(result[0][ship].freeSpace * 100).toFixed(2)}%`, result[0][ship].send);
+
+        for (let floor = 0; floor < result[0][ship].containers.length; floor++) {
+            //prepare canvas
+            const floorOfShip = (p) => {
+                p.setup = () => setCanvas(p, result[0][ship]);
+                p.draw = () => drawCanvas(p, result[0][ship], floor);
+            };
+            const shipObj = new p5(floorOfShip, window.document.getElementById(`ship${ship + 1}-${floor}`));
+        }
+    }
+
 });
 
+// listening on onclick event when changing radio button
+const radioButtons = document.menuForm.algorithm;
+let previous = null;
+
+radioButtons.forEach((el) => el.addEventListener("click", (event) => {
+    if (el !== previous) previous = el;
+    console.log(el.value)
+}))
+
+
+
+//general method to create node and append it in intended place
 function createNode(tag, parent, id, className, text, send = null) {
     const node = document.createElement(tag);
     if (id) node.id = id;
@@ -35,30 +57,26 @@ function createNode(tag, parent, id, className, text, send = null) {
         const textNode = document.createTextNode(text);
         node.appendChild(textNode);
     }
-    if(send) node.classList.add("ship-send");
-    document.querySelector(parent).appendChild(node);
+    if (send) node.classList.add("ship-send");
+    document.getElementById(parent).appendChild(node);
 }
 
+//how much canvas should be scaled
 const scale = 5;
 
+//set canvas
 function setCanvas(p, ship) {
     p.createCanvas((ship.length) * scale, (ship.width) * scale);
     p.textAlign(p.CENTER, p.CENTER);
 }
 
-function drawCanvas(p, ship) {
+//draw canvas - fill with containers
+function drawCanvas(p, ship, floor) {
     p.background(220);
     p.fill(222);
     p.noStroke();
     p.rect(0, 0, (ship.length) * scale, (ship.width) * scale);
-    const containers = ship.containers[0];
-    //       for (var i = 0; i < containers.length; i++) {
-    //         p.fill(124, 245, 35);
-    //         p.rect(containers[i].pivot.x*scale,containers[i].pivot.y*scale,containers[i].element.width*scale,containers[i].element.length*scale)
-    //         p.textSize(containers[i].element.width > containers[i].element.length ? containers[i].element.length*scale/2 : containers[i].element.width*scale/2);
-    //         p.fill(0);
-    //         p.text(containers[i].element.id, (containers[i].pivot.x+containers[i].element.width/2)*scale, (containers[i].pivot.y+containers[i].element.length/2)*scale);
-    //   }
+    const containers = ship.containers[floor];
     for (var i = 0; i < containers.length; i++) {
         p.stroke(0, 0, 0);
         p.fill(124, 245, 35);
@@ -927,6 +945,7 @@ const result = [
                         }
                     }
                 ],
+                [],
                 [],
                 []
             ],

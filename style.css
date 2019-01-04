@@ -29,19 +29,23 @@ canvas {
 }
 
 .menu{
-    width:100%;
-    height: 50px;
+    width: 100%;
+    height: 100px;
     background-color: white;;
     display: flex;
     color: #990000;
     box-shadow: 0 3px 20px rgba(3,3,2,.2);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .incrementation {
-    margin: 20px 0px;
+    margin: 30px 0px 20px 0px;
     text-align: center;
-    color: #990000;
-    font-weight: bold;
+    color: #242324;
+    /* font-weight: bold; */
+    text-transform: uppercase;
 }
 
 .container-columns{
@@ -50,7 +54,7 @@ canvas {
 }
   
 .container-columns  > div{
-    width: 30%;
+    width: 32%;
     /* border: 1px solid peru; */
     display: flex;
     flex-direction: column;
@@ -77,8 +81,57 @@ canvas {
 }
 
 .ship-name{
-    color:red;
+    color:#990000;
 }
 .ship-send{
-    color:green;
+    color: #114411;
+}
+.ship-label{
+    margin-left: 3%;
+    display: flex;
+}
+.ship-label  > div{
+    width: 32%;
+    /* border: 1px solid peru; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+
+[type="radio"] {
+    border-width: 1px; 
+    clip: rect(0 0 0 0); 
+    height: 1px; margin: -1px; 
+    padding: 0; 
+    width: 1px;
+}
+
+.label-radio {
+    cursor: pointer;
+    font-size: 16px;
+    color: #242324;
+    margin-right: 20px;
+}
+
+[type="radio"] + span:before {
+    transform: scale(0.55); 
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.25em;
+    border-radius: 1em;
+    border: 0.125em solid #fafafa;
+    box-shadow: 0 0 0 0.1em #ddd;
+    margin-right: 0.35em;
+    transition: 0.5s ease all;
+    color: #242324;
+
+}
+
+[type="radio"]:checked + span:before {
+    background: #990000;
+    box-shadow: 0 0 0 0.2em #990000;
 }

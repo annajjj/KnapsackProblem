@@ -10,24 +10,34 @@
 <body>
   <div class="container" id="container">
     <div class="header">raport of ship loading algorithms</div>
-    <div class="menu"></div>
-    <div id="container">
-    <!-- <div class="incrementation">1 delivery</div>
-    <div class="container-columns">
-      <div class="floor-text-container">
-        <div class="floor-text">floor0</div>
-      </div>
-     <div id="ship1">
-        <div class="ship-name">ship1</div>
-      </div> -->
-      <!-- <div id="ship2">
-        <div class="ship-name">ship2</div>
-      </div> 
-      <div id="ship3">
-        <div class="ship-name">ship3</div>
-      </div>
+    <div class="menu">
+      <form name="menuForm">
+      <div class='radio-buttons' id="menu-buttons" *ngIf='url!="register"'>
+        <span>                      
+            <label class='label-radio' for="naive">
+                <input type="radio" value="naive" id="naive" name="algorithm"> 
+                <span>1 algorithm - naive</span>
+            </label>
+        </span>
+        <span>
+            <label class='label-radio' for="brutal">
+                <input type="radio" value="brutal" id="brutal" name="algorithm"> 
+                <span>2 algorithm - naive with sorting and rotating</span>
+            </label>
+        </span>
+        <span>
+          <label class='label-radio' for="cords">
+              <input type="radio" value="coords" id="cords" name="algorithm"> 
+              <span>3 algorithm - coords</span>
+          </label>
+      </span>
     </div>
-  </div> -->
+    </form>
+</div>
+
+    </div>
+    <div id="container">
+  
 </div>
   <script src="script.js"></script>
 </body>
