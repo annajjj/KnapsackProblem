@@ -26,6 +26,6 @@ console.timeEnd('HalfBrutal');
 const report = {
     coord: serviceCoord.report,
     naive: serviceNaive.report,
-    halfBrutal: serviceHalfBrutal
+    halfBrutal: serviceHalfBrutal.report
 };
 helpers_1.saveToFile(JSON.stringify(report, null, 1), '../raport.json');

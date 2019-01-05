@@ -137,9 +137,9 @@ export class HalfBrutalService {
 const data = parseTxt(readFromFile('../generated-data-txt.txt'))
 const service = new HalfBrutalService([ships[0], ships[1], ships[2]], data);
 service.optimize();
-// console.log(JSON.stringify(service.report, null, 1))
-console.log(service.report.length)
-saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
+console.log(JSON.stringify(service.report, null, 1))
+// console.log(service.report.length)
+// saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
 
 
 

@@ -1,44 +1,45 @@
 <html>
 
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.dom.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/addons/p5.dom.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-  <div class="container" id="container">
-    <div class="header">raport of ship loading algorithms</div>
-    <div class="menu">
-      <form name="menuForm">
-      <div class='radio-buttons' id="menu-buttons" *ngIf='url!="register"'>
-        <span>                      
-            <label class='label-radio' for="naive">
-                <input type="radio" value="naive" id="naive" name="algorithm"> 
-                <span>1 algorithm - naive</span>
-            </label>
-        </span>
-        <span>
-            <label class='label-radio' for="brutal">
-                <input type="radio" value="brutal" id="brutal" name="algorithm"> 
-                <span>2 algorithm - naive with sorting and rotating</span>
-            </label>
-        </span>
-        <span>
-          <label class='label-radio' for="cords">
-              <input type="radio" value="coords" id="cords" name="algorithm"> 
-              <span>3 algorithm - coords</span>
-          </label>
-      </span>
-    </div>
-    </form>
-</div>
+    <div class="container" id="container">
+        <div class="header">raport of ship loading algorithms</div>
+        <div class="menu">
+            <input type="file" id="filetoRead" />
+            <form name="menuForm">
+                <div class='radio-buttons' id="menu-buttons" *ngIf='url!="register"'>
+                    <span>
+                        <label class='label-radio' for="coord">
+                            <input type="radio" value="coord" id="coord" name="algorithm">
+                            <span>1 algorithm - coord</span>
+                        </label>
+                    </span>
+                    <span>
+                        <label class='label-radio' for="naive">
+                            <input type="radio" value="naive" id="naive" name="algorithm">
+                            <span>2 algorithm - naive</span>
+                        </label>
+                    </span>
+                    <span>
+                        <label class='label-radio' for="halfBrutal">
+                            <input type="radio" value="halfBrutal" id="halfBrutal" name="algorithm">
+                            <span>3 algorithm - naive with sorting and rotating</span>
+                        </label>
+                    </span>
+                </div>
+            </form>
+        </div>
 
     </div>
     <div id="container">
-  
-</div>
-  <script src="script.js"></script>
+
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>
