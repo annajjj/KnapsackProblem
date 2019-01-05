@@ -134,9 +134,9 @@ export class Warehouse {
     elements: Array<WarehouseElement[]> = [];
     floors: Array<FreeSpace[]> = [];
     private startingFloorSpace: number;
-    constructor(public ship: Ship) {
+    constructor(public ship: Ship, containersHeight: number) {
         // bug Math.floor(ship.height / generatedContainers[0].height) hard code :)
-        for (let i = 0; i < Math.floor(ship.height / containers[0].height); i++) {
+        for (let i = 0; i < Math.floor(ship.height / containersHeight); i++) {
             this.floors.push([new FreeSpace(0, 0, ship.width, ship.length)]);
             this.elements.push([]);
         };

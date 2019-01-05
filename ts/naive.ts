@@ -1,24 +1,23 @@
-import { containers, ship } from "./mock/mock";
+import { WarehouseElement } from './interfaces/a.d';
+import { ships } from "./mock/mock";
 import { generatedContainers } from "./mock/generated-data";
 import * as cTable from 'console.table';
+import { parseTxt } from "./txtParser";
+import { readFromFile } from "./helpers";
+import { Ship } from "./interfaces/a";
 
 export class Warehouse {
-    id: string;
-    width: number;
-    length: number;
-    height: number;
+    ship: Ship;
     sortedContainers = [];
     freeSpace: number;
-    floors = Math.floor(ship.height / generatedContainers[0].height);
+    floors: number;
     shipSpaceMap = {};
     notPlacedContainers = [];
-    cords = {};
+    elements: Array<WarehouseElement[]> = [];
 
-    constructor(id, width, length, height, containers) {
-        this.id = id;
-        this.width = width;
-        this.length = length;
-        this.height = height;
+    constructor(ship, containersHeight, containers) {
+        this.ship = ship;
+        this.floors = Math.floor(ship.height / containersHeight);
         this.createShipSpaceMap();
         this.createCordsMap();
         this.sortContainers(containers);
@@ -27,18 +26,18 @@ export class Warehouse {
     //create ship space map - floor{i}: [[]]
     createShipSpaceMap() {
         for (let floor = 0; floor < this.floors; floor++) {
-            this.shipSpaceMap[`floor${floor}`] = new Array(ship.length);
-            for (let i = 0; i < ship.length; i++) {
-                this.shipSpaceMap[`floor${floor}`][i] = new Array(ship.width);
-                for (let j = 0; j < ship.width; j++)
-                    this.shipSpaceMap[`floor${floor}`][i][j] = 'x';
+            this.shipSpaceMap[floor] = new Array(this.ship.length);
+            for (let i = 0; i < this.ship.length; i++) {
+                this.shipSpaceMap[floor][i] = new Array(this.ship.width);
+                for (let j = 0; j <  this.ship.width; j++)
+                    this.shipSpaceMap[floor][i][j] = 'x';
             }
         }
     }
 
     createCordsMap() {
         for (let floor = 0; floor < this.floors; floor++) {
-                this.cords[`floor${floor}`] = new Array();
+                this.elements[floor] = new Array();
             }
     }
 
@@ -68,20 +67,20 @@ export class Warehouse {
 
     //check if container can be placed
     checkSpaceXY(container, floor) {
-        for (let shipX = 0; shipX < ship.length; shipX++) {
-            for (let shipY = 0; shipY < ship.width; shipY++) {
-                if (this.shipSpaceMap[`floor${floor}`][shipX][shipY] === 'x') {
+        for (let shipX = 0; shipX <  this.ship.length; shipX++) {
+            for (let shipY = 0; shipY <  this.ship.width; shipY++) {
+                if (this.shipSpaceMap[floor][shipX][shipY] === 'x') {
                     let checkFloorUnder = 0;
-                    for (let containerX = shipX; ((containerX < shipX + container.length) && (shipX + container.length < ship.length + 1)); containerX++) {
-                        for (let containerY = shipY; ((containerY < shipY + container.width) && (shipY + container.width < ship.width + 1)); containerY++) {
-                            if (this.shipSpaceMap[`floor${floor}`][containerX][containerY] !== 'x') {
+                    for (let containerX = shipX; ((containerX < shipX + container.length) && (shipX + container.length < this.ship.length + 1)); containerX++) {
+                        for (let containerY = shipY; ((containerY < shipY + container.width) && (shipY + container.width < this.ship.width + 1)); containerY++) {
+                            if (this.shipSpaceMap[floor][containerX][containerY] !== 'x') {
                                 containerX = shipX + container.length;
                                 containerY = shipY + container.width;
                                 break;
                             }
 
                             if (floor > 0)
-                                if (this.shipSpaceMap[`floor${floor - 1}`][containerX][containerY] !== 'x')
+                                if (this.shipSpaceMap[floor-1][containerX][containerY] !== 'x')
                                     checkFloorUnder++;
 
                             if ((container.length == (containerX - shipX + 1)) && (container.width == (containerY - shipY + 1))) {
@@ -90,7 +89,7 @@ export class Warehouse {
                                     containerY = shipY + container.width;
                                     break;
                                 }
-                                this.cords[`floor${floor}`].push({element: {id: container.id, width: container.width, length: container.length}, pivot: {x: shipX, y: shipY}});
+                                this.elements[floor].push({element: container, pivot: {x: shipX, y: shipY}});
                                 this.fillShipSpaceMapWithContainer(shipX, shipY, container, floor)
                                 return { valid: true };
                             }
@@ -106,42 +105,46 @@ export class Warehouse {
     fillShipSpaceMapWithContainer(x, y, container, floor) {
         for (let i = x; i < container.length + x; i++)
             for (let j = y; j < container.width + y; j++)
-                this.shipSpaceMap[`floor${floor}`][i][j] = container.id;
+                this.shipSpaceMap[floor][i][j] = container.id;
     }
 
     //count in % how much free space is after placemant of containers
     countFreeSpace() {
         let freeSpace = 0;
         for (let floor = 0; floor < this.floors; floor++) {
-            for (let i = 0; i < ship.length; i++) {
-                for (let j = 0; j < ship.width; j++) {
-                    if (this.shipSpaceMap[`floor${floor}`][i][j] == "x")
+            for (let i = 0; i <  this.ship.length; i++) {
+                for (let j = 0; j <  this.ship.width; j++) {
+                    if (this.shipSpaceMap[floor][i][j] == "x")
                         freeSpace++;
                 }
             }
         }
-        this.freeSpace = freeSpace / (ship.width * ship.length * this.floors);
+        this.freeSpace = freeSpace / (this.ship.width *  this.ship.length * this.floors);
     }
 
     //show results - containers placed in ship, not placed containers and % free space
     showResults() {
         let table;
         for (let floor = 0; floor < this.floors; floor++) {
-            console.log(`floor${floor}`)
-            table = cTable.getTable(this.shipSpaceMap[`floor${floor}`]);
-            console.table(this.shipSpaceMap[`floor${floor}`]);
+            console.log(floor)
+            table = cTable.getTable(this.shipSpaceMap[floor]);
+            console.table(this.shipSpaceMap[floor]);
         }
-        this.countFreeSpace();
         console.log("not placed containers: ", this.notPlacedContainers);
         console.log("free space: ", this.freeSpace);
     }
 
 }
 
-export function naive(ship, containers) {
-    const warehouse = new Warehouse(ship.id, ship.width, ship.length, ship.width, containers);
-    warehouse.placeContainers();
-    warehouse.showResults();
-}
+// export function naive(ship, containers) {
+//     const data = parseTxt(readFromFile('../generated-data-txt.txt'))
 
-naive(ship, generatedContainers);
+//     const warehouse = new Warehouse(ship,20, data);
+//     warehouse.placeContainers();
+//     warehouse.countFreeSpace();
+//     warehouse.showResults();
+
+//     console.log(warehouse.elements);
+// }
+
+// naive(ships[0], generatedContainers);

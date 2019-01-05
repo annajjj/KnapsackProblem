@@ -42,7 +42,7 @@ function validateLine(data) {
             return 0;
     }
     //check if timestamp is integer
-    if (!Number.isInteger(+data[4]))
+    if (type === "c" && !Number.isInteger(+data[4]))
         return 0;
     return 1;
 }

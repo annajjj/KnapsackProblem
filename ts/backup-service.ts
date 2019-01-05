@@ -31,8 +31,15 @@ export class CoordMethodService {
         let notPlacedContainers = [[], [], []];
         let containers = []
         let ships = [];
-        let lastShip = undefined;
+        let lastShip = 0;
 
+        let validation = () => {
+            if( (notPlacedContainers[0].length && notPlacedContainers[1].length  && notPlacedContainers[2].length) || 
+            (!this.data.length || (notPlacedContainers[0].length || notPlacedContainers[1].length  || notPlacedContainers[2].length)) ) 
+            return true;
+            else return false;
+        };
+        
         //if not placed cos mają 
             //if container
                 //ładuj kontenery 
@@ -44,20 +51,26 @@ export class CoordMethodService {
             //if ship
                 //ładuj ship 
 
-        while (this.data.length) {
+        //bug, referencja przy danych, pobiera je i nie wracają już nigdy 
+        while (this.data.length || (notPlacedContainers[0].length || notPlacedContainers[1].length  || notPlacedContainers[2].length)) {
+            console.log(validation())
             //if not placed cos mają
-            if (notPlacedContainers[lastShip] && notPlacedContainers[lastShip].length) {
+            if (validation() ) {
                 //if container
-                if (this.data[0].id.includes('c')) {
+                if (validation() || this.data[0].id.includes('c')) {
                     //ładuj kontenery 
                     containers = [...notPlacedContainers[lastShip]]
                 }
                 //if ship
-                else if (this.data[0].id.includes('s')) {
-                    //ładuj ship 
+                else {
+                    //spakuj shipy do tmp, pobierz kontenery i wroc shipy unshiftem shipy   
+                    let tmpShips = [];
                     while (this.data.length && this.data[0].id.includes('s')) {
-                        // console.log(ships)
-                        ships.push(this.data.shift())
+                        tmpShips.unshift(this.data.shift())
+                    }
+                    if(this.data.length) {
+                        containers = [...notPlacedContainers[lastShip], ...this.makeContainerChunk()]
+                        tmpShips.forEach(ship => this.data.unshift(ship))
                     }
                 }
                 notPlacedContainers = [[], [], []];
@@ -70,16 +83,12 @@ export class CoordMethodService {
                 }
                 //if ship
                 else if (this.data[0].id.includes('s')) {
-                    //spakuj shipy do tmp, pobierz kontenery i wroc shipy unshiftem shipy   
-                    let tmpShips = [];
+                    //ładuj ship 
                     while (this.data.length && this.data[0].id.includes('s')) {
-                        tmpShips.unshift(this.data.shift())
+                        console.log(ships)
+                        ships.push(this.data.shift())
                     }
-                    console.log(tmpShips)
-                    containers = this.makeContainerChunk()
-                    tmpShips.forEach(ship => this.data.unshift(ship))
                 }
-                
             }
 
             // ship change
@@ -100,12 +109,12 @@ export class CoordMethodService {
                 for (const container of containers) {
                     //place or return object to notPlacedContainers
                     if (!warehouse.store(container)) notPlacedContainers[i].push(container);
-                }
-
+                }  
             })
-            if(notPlacedContainers[0].length && notPlacedContainers[1].length  && notPlacedContainers[2].length ) {
 
-                this.warehouses.forEach((warehouse, i) => {
+
+            this.warehouses.forEach((warehouse, i) => {    
+                if(validation() ) {
                 reports.push({
                     id: warehouse.ship.id,
                     width: warehouse.ship.width,
@@ -115,9 +124,10 @@ export class CoordMethodService {
                     freeSpace: warehouse.countFreeSpace(),
                     send: false
                 })
-            })
+            } })
 
 
+            if(validation() ) {
                 //best space alocating
                 lastShip = reports.findIndex(report => report === reports.reduce((best, el) => {
                     return best.freeSpace < el.freeSpace ? best : el
@@ -126,7 +136,7 @@ export class CoordMethodService {
                 this.report.push(reports);
                 //ship's warehouses reset
                 this.warehouses.forEach(warehouse => this.warehouses.push(new Warehouse(this.warehouses.shift().ship, this.containersHeight)))
-            } else lastShip = undefined;
+            }
         }
     }
 }
@@ -143,6 +153,7 @@ export class CoordMethodService {
 
 
 const data = parseTxt(readFromFile('../generated-data-txt.txt'))
+// console.log(data)
 
 const service = new CoordMethodService([ships[0], ships[1], ships[2]], data);
 service.optimize();
