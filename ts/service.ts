@@ -7,14 +7,17 @@ import { readFromFile, saveToFile } from './helpers';
 
 export class CoordMethodService {
     warehouses = [];
-    report = [];
+    report: {count: number, date: Date, result: any[]} = {result: [], count: 0, date: new Date()};
     containersHeight: number;
     // data = []
-    debugger = 1;
     constructor(ships: [Ship, Ship, Ship], public data: (Container | Ship)[]) {
         //bug jeżeli w pliku będzie pierwszy statek to się wywali
         this.containersHeight = data[0].height;
         ships.forEach(ship => this.warehouses.push(new Warehouse(ship, this.containersHeight)));
+        this.report.count = containers.reduce((result, el) => {
+            if(el.id.includes('c')) return result + 1;
+            else return result 
+        },0)
     }
 
     private makeContainerChunk() {
@@ -56,7 +59,6 @@ export class CoordMethodService {
                 else if (this.data[0].id.includes('s')) {
                     //ładuj ship 
                     while (this.data.length && this.data[0].id.includes('s')) {
-                        // console.log(ships)
                         ships.push(this.data.shift())
                     }
                 }
@@ -75,7 +77,6 @@ export class CoordMethodService {
                     while (this.data.length && this.data[0].id.includes('s')) {
                         tmpShips.unshift(this.data.shift())
                     }
-                    console.log(tmpShips)
                     containers = this.makeContainerChunk()
                     tmpShips.forEach(ship => this.data.unshift(ship))
                 }
@@ -123,7 +124,7 @@ export class CoordMethodService {
                     return best.freeSpace < el.freeSpace ? best : el
                 }, { freeSpace: 1 }));
                 reports[lastShip].send = true;
-                this.report.push(reports);
+                this.report.result.push(reports);
                 //ship's warehouses reset
                 this.warehouses.forEach(warehouse => this.warehouses.push(new Warehouse(this.warehouses.shift().ship, this.containersHeight)))
             } else lastShip = undefined;
@@ -142,13 +143,13 @@ export class CoordMethodService {
 
 
 
-const data = parseTxt(readFromFile('../generated-data-txt.txt'))
+// const data = parseTxt(readFromFile('../generated-data-txt.txt'))
 
-const service = new CoordMethodService([ships[0], ships[1], ships[2]], data);
-service.optimize();
-// console.log(JSON.stringify(service.report, null, 1))
-console.log(service.report.length)
-saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
+// const service = new CoordMethodService([ships[0], ships[1], ships[2]], data);
+// service.optimize();
+// // console.log(JSON.stringify(service.report, null, 1))
+// console.log(service.report.result.length)
+// saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
 
 
 

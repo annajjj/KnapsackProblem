@@ -3,9 +3,9 @@ import { Container, Ship } from './interfaces/a';
 import { ships, containers } from './mock/mock';
 import { parseTxt } from './txtParser';
 import { readFromFile, saveToFile } from './helpers';
-import { Warehouse } from './naive';
+import { WarehouseExtended } from './halfBrutal';
 
-export class NaiveService {
+export class HalfBrutalService {
     ships = [];
     report: {count: number, date: Date, result: any[]} = {result: [], count: 0, date: new Date()};
     containersHeight: number;
@@ -16,7 +16,7 @@ export class NaiveService {
         this.containersHeight = data[0].height;
         ships.forEach(ship => {
             this.ships.push(ship)
-            this.warehouses.push(new Warehouse(ship, this.containersHeight, []))
+            this.warehouses.push(new WarehouseExtended(ship, this.containersHeight, []))
         });
         this.report.count = containers.reduce((result, el) => {
             if(el.id.includes('c')) return result + 1;
@@ -93,13 +93,13 @@ export class NaiveService {
                 this.ships.shift();
                 this.ships.push(tmpShip)
                 this.warehouses.shift();
-                this.warehouses.push(new Warehouse(tmpShip, this.containersHeight, []));
+                this.warehouses.push(new WarehouseExtended(tmpShip, this.containersHeight, []));
             }
 
             const reports = [];
 
 
-            this.warehouses.forEach((warehouse: Warehouse, i) => {
+            this.warehouses.forEach((warehouse: WarehouseExtended, i) => {
                 warehouse.sortedContainers = [...containers];
 
                 warehouse.placeContainers();
@@ -127,19 +127,19 @@ export class NaiveService {
                 }, { freeSpace: 1 }));
                 reports[lastShip].send = true;
                 this.report.result.push(reports);
-                this.warehouses.forEach(warehouse => this.warehouses.push(new Warehouse(this.warehouses.shift().ship, this.containersHeight, [])))
+                this.warehouses.forEach(warehouse => this.warehouses.push(new WarehouseExtended(this.warehouses.shift().ship, this.containersHeight, [])))
             }else lastShip = undefined;
         } 
     }
 
 }
 
-// const data = parseTxt(readFromFile('../generated-data-txt.txt'))
-// const service = new NaiveService([ships[0], ships[1], ships[2]], data);
-// service.optimize();
-// // console.log(JSON.stringify(service.report, null, 1))
-// console.log(service.report.length)
-// saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
+const data = parseTxt(readFromFile('../generated-data-txt.txt'))
+const service = new HalfBrutalService([ships[0], ships[1], ships[2]], data);
+service.optimize();
+// console.log(JSON.stringify(service.report, null, 1))
+console.log(service.report.length)
+saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
 
 
 
