@@ -12,8 +12,8 @@ const data = readFromFile("../generated-data-txt.txt");
 const parsedData = parseTxt(data);
 const report = {};
 //optimize cord algorithm
-const serviceCoord = new CoordMethodService([ships[0], ships[1], ships[2]], [...parsedData]);
-const serviceNaive = new NaiveService([ships[0], ships[1], ships[2]], [...parsedData]);
+const serviceCoord = new CoordMethodService([...parsedData]);
+const serviceNaive = new NaiveService([...parsedData]);
 console.time('Coord');
 serviceCoord.optimize();
 console.timeEnd('Coord');
@@ -24,7 +24,7 @@ serviceNaive.optimize();
 console.timeEnd('Naive');
 
 report['naive'] = JSON.stringify(serviceNaive.report,null,3)
-const serviceHalfBrutal = new HalfBrutalService([ships[0], ships[1], ships[2]], [...parsedData]);
+const serviceHalfBrutal = new HalfBrutalService([...parsedData]);
 console.time('HalfBrutal');
 serviceHalfBrutal.optimize();
 console.timeEnd('HalfBrutal');

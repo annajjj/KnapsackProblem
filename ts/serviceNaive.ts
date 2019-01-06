@@ -11,13 +11,15 @@ export class NaiveService {
     containersHeight: number;
     warehouses = []
     // data = []
-    constructor(ships: [Ship, Ship, Ship], public data: (Container | Ship)[]) {
+    constructor(public data: (Container | Ship)[]) {
         //bug jeżeli w pliku będzie pierwszy statek to się wywali
-        this.containersHeight = data[0].height;
-        ships.forEach(ship => {
-            this.ships.push(ship)
-            this.warehouses.push(new Warehouse(ship, this.containersHeight, []))
-        });
+        this.containersHeight = data[3].height;
+        for(let i =0; i<3; i++) {
+            let a = this.data.shift();
+            this.warehouses.push(new Warehouse(a, this.containersHeight, []));
+            this.ships.push(a)
+        }
+
         this.report.count = containers.reduce((result, el) => {
             if(el.id.includes('c')) return result + 1;
             else return result 

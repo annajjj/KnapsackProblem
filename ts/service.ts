@@ -10,10 +10,13 @@ export class CoordMethodService {
     report: {count: number, date: Date, result: any[]} = {result: [], count: 0, date: new Date()};
     containersHeight: number;
     // data = []
-    constructor(ships: [Ship, Ship, Ship], public data: (Container | Ship)[]) {
+    constructor(public data: (Container | Ship)[]) {
         //bug jeżeli w pliku będzie pierwszy statek to się wywali
-        this.containersHeight = data[0].height;
-        ships.forEach(ship => this.warehouses.push(new Warehouse(ship, this.containersHeight)));
+        this.containersHeight = data[3].height;
+        for(let i =0; i<3; i++) {
+            this.warehouses.push(new Warehouse(this.data.shift(), this.containersHeight));
+        }
+        
         this.report.count = containers.reduce((result, el) => {
             if(el.id.includes('c')) return result + 1;
             else return result 
