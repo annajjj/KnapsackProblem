@@ -32,7 +32,8 @@ export class NaiveService {
         while (this.data.length && this.data[0].id.includes('c') && containers[containers.length - 1].timestamp === (this.data[0] as Container).timestamp) {
             containers.push(this.data.shift());
         }
-        return containers;
+        if(containers[0]) return containers;
+        else return []
     }
 
     optimize() {
@@ -59,6 +60,7 @@ export class NaiveService {
                 if (this.data[0].id.includes('c')) {
                     //ładuj kontenery 
                     containers = [...notPlacedContainers[lastShip]]
+                    notPlacedContainers = [[], [], []];
                 }
                 //if ship
                 else if (this.data[0].id.includes('s')) {
@@ -67,13 +69,12 @@ export class NaiveService {
                         ships.push(this.data.shift())
                     }
                 }
-                notPlacedContainers = [[], [], []];
             }
             //if not placed nie maja nic
             else {
                 if (this.data[0].id.includes('c')) {
                     //ładuj kontenery 
-                    containers = [...containers, ...this.makeContainerChunk()];
+                    containers = this.makeContainerChunk();
                 }
                 //if ship
                 else if (this.data[0].id.includes('s')) {
@@ -82,8 +83,10 @@ export class NaiveService {
                     while (this.data.length && this.data.length && this.data[0].id.includes('s')) {
                         tmpShips.unshift(this.data.shift())
                     }
+                    if(this.data.length){
                     containers = this.makeContainerChunk()
                     tmpShips.forEach(ship => this.data.unshift(ship))
+                }
                 }
             }
 
@@ -101,10 +104,8 @@ export class NaiveService {
 
             this.warehouses.forEach((warehouse: Warehouse, i) => {
                 warehouse.sortedContainers = [...containers];
-
                 warehouse.placeContainers();
-                notPlacedContainers[i] = warehouse.notPlacedContainers;
-
+                notPlacedContainers[i] = [...warehouse.notPlacedContainers];
             })
 
             if (notPlacedContainers[0].length && notPlacedContainers[1].length  && notPlacedContainers[2].length ) {
@@ -134,12 +135,13 @@ export class NaiveService {
 
 }
 
-const data = parseTxt(readFromFile('../generated-data-txt.txt'))
-const service = new NaiveService([ships[0], ships[1], ships[2]], data);
-service.optimize();
-console.log(JSON.stringify(service.report, null, 1))
-// console.log(service.report.length)
-// saveToFile(JSON.stringify(service.report, null, 1), '../raport.json');
+// const data = parseTxt(readFromFile('../generated-data-txt.txt'))
+// // console.log(data)
+// const service = new NaiveService([ships[0], ships[1], ships[2]], data);
+// service.optimize();
+// // console.log(JSON.stringify(service.report, null, 1))
+// console.log(service.report.result.length)
+// saveToFile(JSON.stringify(service.report.result, null, 1), '../raport.json');
 
 
 

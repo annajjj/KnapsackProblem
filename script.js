@@ -15,28 +15,32 @@ document.getElementById("filetoRead").addEventListener("change",function(){
 
         if (file) {
             var reader = new FileReader();
-            
+            var result= {};
             reader.onload = function (evt) {
+                console.log('event')
                 document.getElementById("coord").disabled = false;
                 document.getElementById("halfBrutal").disabled = false;
                 document.getElementById("naive").disabled = false;
-
-                const result = JSON.parse(evt.target.result);
+                
+                const resultAAA = JSON.parse(evt.target.result);
+                result.coord = JSON.parse(resultAAA.coord)
+                result.naive = JSON.parse(resultAAA.naive)
+                result.halfBrutal = JSON.parse(resultAAA.halfBrutal)
                 document.getElementById("coord").checked = true;
                 const dateToDisplay = formatDate(result.coord.date);
                 createNode("div", "container", null, "raport-text" , `raport from ${dateToDisplay}, number of containers to place: ${result.coord.count}`);
                 generateDom(result.coord.result)      
 
-                // listening on onclick event when changing radio button
-                let previous = null;
-                radioButtons.forEach((el) => el.addEventListener("click", (event) => {
-                    if (el !== previous) previous = el;
-                    const containerElement = document.getElementById("container");
-                    if(containerElement.childNodes[6]) containerElement.removeChild(containerElement.childNodes[6]);
-                    generateDom(result[`${el.value}`].result)         
-                }))
-
+                
             };
+            // listening on onclick event when changing radio button
+            let previous = null;
+            radioButtons.forEach((el) => el.addEventListener("click", (event) => {
+                if (el !== previous) previous = el;
+                const containerElement = document.getElementById("container");
+                if(containerElement.childNodes[6]) containerElement.removeChild(containerElement.childNodes[6]);
+                generateDom(result[`${el.value}`].result)         
+            }))
 
             reader.onerror = function (evt) {
                 console.error("An error ocurred reading the file",evt);
@@ -47,7 +51,24 @@ document.getElementById("filetoRead").addEventListener("change",function(){
     },false);
 
 
+    function triangleEvent(event) {
+        let incrementation = incrementationButtons.findIndex(el=> el===this)
+        const container = document.getElementById(`container-column-wrapper${incrementation}`);
+        const button = document.getElementById(`incrementation-button${incrementation}`);
+
+        incrementationButtons[incrementation].show = !incrementationButtons[incrementation].show;
+        if(incrementationButtons[incrementation].show == true) container.classList.remove("hide-container");
+        else container.classList.add("hide-container");
+        button.classList.toggle("arrow-toggle");
+
+    }
+
 function generateDom(result){
+    console.log('genDOM')
+
+    incrementationButtons.forEach(el =>   el.button.removeEventListener("click", triangleEvent));
+    incrementationButtons = [];
+
     createNode("div", "container", "raport-wrapper", null , null);
     //loop for all deliveries
     for (let incrementation = 0; incrementation < result.length; incrementation++) {
@@ -63,18 +84,7 @@ function generateDom(result){
 
         const incrementationButton = document.getElementById(`incrementation-button${incrementation}`);
         incrementationButtons.push({button: incrementationButton, show: true});
-
-        incrementationButton.addEventListener("click", (event) => {
-            const container = document.getElementById(`container-column-wrapper${incrementation}`);
-            const button = document.getElementById(`incrementation-button${incrementation}`);
-
-            incrementationButtons[incrementation].show = !incrementationButtons[incrementation].show;
-            if(incrementationButtons[incrementation].show == true) container.classList.remove("hide-container");
-            else container.classList.add("hide-container");
-            button.classList.toggle("arrow-toggle");
-
-        })
-
+        incrementationButton.addEventListener("click", triangleEvent);
 
         //firstly create sectins for floors - max(floor of all ships)
         const largestFloorNumber = Math.max(...result[incrementation].map(el => el = el.containers.length));
@@ -106,6 +116,7 @@ function generateDom(result){
         }
 
     }
+
 
 };
 

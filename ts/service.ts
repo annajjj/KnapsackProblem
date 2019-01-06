@@ -54,6 +54,7 @@ export class CoordMethodService {
                 if (this.data[0].id.includes('c')) {
                     //ładuj kontenery 
                     containers = [...notPlacedContainers[lastShip]]
+                    notPlacedContainers = [[], [], []];
                 }
                 //if ship
                 else if (this.data[0].id.includes('s')) {
@@ -62,7 +63,6 @@ export class CoordMethodService {
                         ships.push(this.data.shift())
                     }
                 }
-                notPlacedContainers = [[], [], []];
             }
             //if not placed nie maja nic
             else {
