@@ -5,7 +5,8 @@
   "main": "ania.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd js && node"
+    "start": "tsc && cd js && node main",
+    "execute": "cd js && node"
   },
   "repository": {
     "type": "git",

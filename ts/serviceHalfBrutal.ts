@@ -19,7 +19,7 @@ export class HalfBrutalService {
             this.warehouses.push(new WarehouseExtended(a, this.containersHeight, []));
             this.ships.push(a)
         }
-        this.report.count = containers.reduce((result, el) => {
+        this.report.count = data.reduce((result, el) => {
             if(el.id.includes('c')) return result + 1;
             else return result 
         },0)

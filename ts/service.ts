@@ -17,7 +17,7 @@ export class CoordMethodService {
             this.warehouses.push(new Warehouse(this.data.shift(), this.containersHeight));
         }
         
-        this.report.count = containers.reduce((result, el) => {
+        this.report.count = data.reduce((result, el) => {
             if(el.id.includes('c')) return result + 1;
             else return result 
         },0)
