@@ -23,7 +23,7 @@ export class Warehouse {
         this.sortContainers(containers);
     }
 
-    //create ship space map - floor{i}: [[]]
+    //create ship space map 
     createShipSpaceMap() {
         for (let floor = 0; floor < this.floors; floor++) {
             this.shipSpaceMap[floor] = new Array(this.ship.length);
@@ -35,13 +35,14 @@ export class Warehouse {
         }
     }
 
+    //create coords map
     createCordsMap() {
         for (let floor = 0; floor < this.floors; floor++) {
                 this.elements[floor] = new Array();
             }
     }
 
-    //sort containers by timestamp and area
+    //sort containers by timestamp
     sortContainers(containers) {
         this.sortedContainers = containers
             .sort((a, b) => {
@@ -130,6 +131,7 @@ export class Warehouse {
             table = cTable.getTable(this.shipSpaceMap[floor]);
             console.table(this.shipSpaceMap[floor]);
         }
+        this.countFreeSpace();
         console.log("not placed containers: ", this.notPlacedContainers);
         console.log("free space: ", this.freeSpace);
     }
