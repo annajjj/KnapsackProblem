@@ -7,9 +7,9 @@ import { HalfBrutalService } from "./serviceHalfBrutal";
 
 //reading data from file
 const data = readFromFile("../generated-data-txt.txt");
-
 //validate and parse to json
 const parsedData = parseTxt(data);
+
 const report = {};
 //optimize cord algorithm
 const serviceCoord = new CoordMethodService([...parsedData]);

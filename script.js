@@ -1,4 +1,3 @@
-
 incrementationButtons = [];
 const radioButtons = document.menuForm.algorithm;
 document.getElementById("coord").disabled = true;
@@ -8,8 +7,9 @@ document.getElementById("naive").disabled = true;
 //read from file
 document.getElementById("filetoRead").addEventListener("change",function(){
         var file = this.files[0];
+        
+        //clear container before showing results from other file 
         const containerElement = document.getElementById("container");
-        console.log(containerElement.childNodes)
         if(containerElement.childNodes[6]) containerElement.removeChild(containerElement.childNodes[6]);
         if(containerElement.childNodes[5]) containerElement.removeChild(containerElement.childNodes[5]);
 
@@ -17,20 +17,26 @@ document.getElementById("filetoRead").addEventListener("change",function(){
             var reader = new FileReader();
             var result= {};
             reader.onload = function (evt) {
-                console.log('event')
+                document.getElementById("fileName").innerHTML = file.name;
                 document.getElementById("coord").disabled = false;
                 document.getElementById("halfBrutal").disabled = false;
                 document.getElementById("naive").disabled = false;
                 
-                const resultAAA = JSON.parse(evt.target.result);
-                result.coord = JSON.parse(resultAAA.coord)
-                result.naive = JSON.parse(resultAAA.naive)
-                result.halfBrutal = JSON.parse(resultAAA.halfBrutal)
+                //parse data from file
+                const resultAll = JSON.parse(evt.target.result);
+                result.coord = JSON.parse(resultAll.coord)
+                result.naive = JSON.parse(resultAll.naive)
+                result.halfBrutal = JSON.parse(resultAll.halfBrutal)
+
+                //by default display coord method
                 document.getElementById("coord").checked = true;
+                
+                //display date and containers count
                 const dateToDisplay = formatDate(result.coord.date);
                 createNode("div", "container", null, "raport-text" , `raport from ${dateToDisplay}, number of containers to place: ${result.coord.count}`);
+                
+                //generate DOM 
                 generateDom(result.coord.result)      
-
                 
             };
             // listening on onclick event when changing radio button
@@ -51,28 +57,12 @@ document.getElementById("filetoRead").addEventListener("change",function(){
     },false);
 
 
-    function triangleEvent(event) {
-        let incrementation = incrementationButtons.findIndex(el=> el===this)
-        const container = document.getElementById(`container-column-wrapper${incrementation}`);
-        const button = document.getElementById(`incrementation-button${incrementation}`);
-
-        incrementationButtons[incrementation].show = !incrementationButtons[incrementation].show;
-        if(incrementationButtons[incrementation].show == true) container.classList.remove("hide-container");
-        else container.classList.add("hide-container");
-        button.classList.toggle("arrow-toggle");
-
-    }
-
 function generateDom(result){
-    console.log('genDOM')
-
-    incrementationButtons.forEach(el =>   el.button.removeEventListener("click", triangleEvent));
     incrementationButtons = [];
 
     createNode("div", "container", "raport-wrapper", null , null);
     //loop for all deliveries
     for (let incrementation = 0; incrementation < result.length; incrementation++) {
-        //incrementation node
         createNode("div", "raport-wrapper", `incrementation-wrapper${incrementation}`, "incrementation-wrapper" , null);
 
         createNode("div", `incrementation-wrapper${incrementation}`, `incrementation-container${incrementation}`, "incrementation-container", null)
@@ -81,10 +71,17 @@ function generateDom(result){
         createNode("div", `incrementation-wrapper${incrementation}`, `ship-label${incrementation}`, "ship-label", null);
         createNode("div", `incrementation-wrapper${incrementation}`, `container-column-wrapper${incrementation}`, 'container-column-wrapper' , null);
 
-
         const incrementationButton = document.getElementById(`incrementation-button${incrementation}`);
         incrementationButtons.push({button: incrementationButton, show: true});
-        incrementationButton.addEventListener("click", triangleEvent);
+        incrementationButton.addEventListener("click", (event) => {
+            const container = document.getElementById(`container-column-wrapper${incrementation}`);
+            const button = document.getElementById(`incrementation-button${incrementation}`);
+
+            incrementationButtons[incrementation].show = !incrementationButtons[incrementation].show;
+            if(incrementationButtons[incrementation].show == true) container.classList.remove("hide-container");
+            else container.classList.add("hide-container");
+            button.classList.toggle("arrow-toggle");
+        });
 
         //firstly create sectins for floors - max(floor of all ships)
         const largestFloorNumber = Math.max(...result[incrementation].map(el => el = el.containers.length));
@@ -116,8 +113,6 @@ function generateDom(result){
         }
 
     }
-
-
 };
 
 
@@ -140,7 +135,7 @@ function formatDate(date){
 }
 
 //how much canvas should be scaled
-const scale = 5;
+const scale = 3;
 
 //set canvas
 function setCanvas(p, ship) {
